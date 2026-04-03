@@ -18,11 +18,8 @@ export default function DemonstracaoPage() {
           <div className="mb-6 inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold tracking-[0.24em] uppercase">
             Demonstração
           </div>
-          <h1 className="max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
-            Veja como a Brasil Smart Service pode responder, organizar e converter atendimentos.
-          </h1>
           <p className="mt-5 max-w-2xl text-lg text-emerald-50/90">
-            Esta página já abre em uma nova aba a partir da home e centraliza o próximo passo comercial do seu site.
+            Veja como a Brasil Smart Service pode responder, organizar e converter atendimentos.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
