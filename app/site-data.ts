@@ -7,8 +7,6 @@ export const mailLinks = {
   sales: `mailto:${contactEmail}?subject=Quero%20automatizar%20meu%20hotel%20com%20a%20Brasil%20Smart%20Service`,
 };
 
-export const whatsappFaqUrl = `${siteUrl}/whatsapp`;
-
 export const heroButtons = [
   {
     href: "/demonstracao",
