@@ -40,7 +40,20 @@ export default function BrasilSmartServiceWebsite() {
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_28%),linear-gradient(180deg,_#f8fafc_0%,_#eef6f1_42%,_#ffffff_100%)] text-slate-900">
       <section className="overflow-hidden bg-[linear-gradient(135deg,_#065f46_0%,_#022c22_52%,_#020617_100%)] px-6 py-20 text-white">
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2">
-          <div>
+          <div className="text-center md:text-left">
+            <div className="mb-6 flex justify-center md:justify-start">
+              <div className="w-full max-w-[220px] md:max-w-[260px]">
+                <Image
+                  src="/og-image.png"
+                  alt="Logo e identidade visual da Brasil Smart Service"
+                  width={1200}
+                  height={630}
+                  priority
+                  className="h-auto w-full object-contain"
+                />
+              </div>
+            </div>
+
             <div className="mb-6 inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-medium tracking-[0.24em] uppercase text-emerald-100">
               Atendimento hoteleiro automatizado
             </div>
@@ -49,13 +62,13 @@ export default function BrasilSmartServiceWebsite() {
               Brasil Smart Service
             </h1>
 
-            <p className="mb-8 max-w-xl text-lg text-emerald-50/90">
+            <p className="mb-8 max-w-xl text-lg text-emerald-50/90 md:max-w-xl">
               Automatize o atendimento da sua pousada ou hotel no WhatsApp com
               inteligência artificial, respostas instantâneas e páginas de ação
               prontas para converter visitantes em contatos.
             </p>
 
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-wrap justify-center gap-4 md:justify-start">
               {heroButtons.map((button) => (
                 <CtaLink
                   key={button.href}
@@ -75,16 +88,7 @@ export default function BrasilSmartServiceWebsite() {
             className="relative rounded-[2rem] border border-white/15 bg-white/10 p-8 shadow-2xl backdrop-blur"
           >
             <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-            <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-slate-950/20 shadow-[0_24px_60px_rgba(2,6,23,0.28)]">
-              <Image
-                src="/og-image.png"
-                alt="Logo e identidade visual da Brasil Smart Service"
-                width={1200}
-                height={630}
-                priority
-                className="h-auto w-full object-cover"
-              />
-            </div>
+            <Bot size={60} />
             <h2 className="mt-4 text-2xl font-semibold">
               Seu recepcionista inteligente
             </h2>
