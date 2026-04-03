@@ -9,7 +9,7 @@ export function SiteFooter() {
           <p className="font-semibold text-white">
             © {new Date().getFullYear()} Brasil Smart Service
           </p>
-          <p>Automação inteligente para hotéis e pousadas.</p>
+          <p>Bot inteligente para atendimento, qualificação e vendas no WhatsApp.</p>
         </div>
 
         <div className="flex flex-wrap gap-4">

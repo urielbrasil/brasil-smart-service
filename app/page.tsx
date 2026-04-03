@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { MessageCircle, Bot, Hotel, CheckCircle, ArrowUpRight } from "lucide-react";
+import { MessageCircle, Bot, BriefcaseBusiness, CheckCircle, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { CtaLink } from "@/components/cta-link";
 import { SiteFooter } from "@/components/site-footer";
@@ -14,24 +14,25 @@ const steps = [
     description: "Integre seu número em poucos minutos e centralize as conversas.",
   },
   {
-    icon: Hotel,
-    title: "2. Configure seu Hotel",
-    description: "Adicione tarifas, regras, horários e respostas frequentes.",
+    icon: BriefcaseBusiness,
+    title: "2. Configure seu Negócio",
+    description: "Defina serviços, produtos, objeções, respostas e etapas do seu funil comercial.",
   },
   {
     icon: Bot,
-    title: "3. IA Atende Sozinha",
-    description: "O sistema responde hóspedes 24h e transfere para humanos quando preciso.",
+    title: "3. Bot Atende e Converte",
+    description: "O sistema responde clientes, qualifica oportunidades e aciona sua equipe no momento certo.",
   },
 ];
 
 const benefits = [
   "Atendimento 24 horas",
   "Respostas instantâneas",
-  "Integração com reservas",
+  "Qualificação automática de leads",
   "Redução de trabalho manual",
-  "Aumento das reservas diretas",
+  "Mais conversões no WhatsApp",
   "Suporte humano quando necessário",
+  "Padronização do atendimento comercial",
 ];
 
 export default function BrasilSmartServiceWebsite() {
@@ -54,7 +55,7 @@ export default function BrasilSmartServiceWebsite() {
             </div>
 
             <div className="mb-6 inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-medium tracking-[0.24em] uppercase text-emerald-100">
-              Atendimento hoteleiro automatizado
+              Atendimento inteligente para negócios
             </div>
 
             <h1 className="mb-6 max-w-xl text-4xl font-bold leading-tight md:text-6xl">
@@ -62,9 +63,9 @@ export default function BrasilSmartServiceWebsite() {
             </h1>
 
             <p className="mb-8 max-w-xl text-lg text-emerald-50/90 md:max-w-xl">
-              Automatize o atendimento da sua pousada ou hotel no WhatsApp com
-              inteligência artificial, respostas instantâneas e páginas de ação
-              prontas para converter visitantes em contatos.
+              Transforme seu WhatsApp em um canal inteligente de atendimento,
+              qualificação e vendas. A Brasil Smart Service cria o bot que fala
+              com seus clientes e trabalha a favor do seu negócio.
             </p>
 
             <div className="flex flex-wrap justify-center gap-4 md:justify-start">
@@ -89,25 +90,25 @@ export default function BrasilSmartServiceWebsite() {
             <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
             <Bot size={60} />
             <h2 className="mt-4 text-2xl font-semibold">
-              Seu recepcionista inteligente
+              Seu bot servidor de negócios
             </h2>
             <p className="mt-3 text-sm leading-6 text-emerald-50/85">
-              Atendimento automático que entende perguntas, envia preços,
-              organiza o próximo passo comercial e prepara a operação para
-              reservas mais rápidas.
+              Atendimento automático que entende perguntas, apresenta soluções,
+              qualifica leads, envia informações e conduz cada conversa até o
+              próximo passo comercial.
             </p>
 
             <div className="mt-8 grid gap-3 rounded-3xl bg-slate-950/30 p-4 text-sm">
               <div className="flex items-center justify-between rounded-2xl bg-white/10 px-4 py-3">
-                <span>Demonstração comercial</span>
+                <span>Demonstração do fluxo de vendas</span>
                 <ArrowUpRight size={18} />
               </div>
               <div className="flex items-center justify-between rounded-2xl bg-white/10 px-4 py-3">
-                <span>Canal de atendimento WhatsApp</span>
+                <span>Bot no WhatsApp do seu negócio</span>
                 <ArrowUpRight size={18} />
               </div>
               <div className="flex items-center justify-between rounded-2xl bg-white/10 px-4 py-3">
-                <span>Implantação guiada</span>
+                <span>Implantação e treinamento</span>
                 <ArrowUpRight size={18} />
               </div>
             </div>
@@ -150,12 +151,12 @@ export default function BrasilSmartServiceWebsite() {
       <section className="px-6 py-16">
         <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 rounded-[2rem] bg-emerald-700 px-8 py-14 text-center text-white shadow-[0_24px_70px_rgba(5,150,105,0.35)]">
           <h2 className="text-3xl font-bold">
-            Transforme o atendimento do seu hotel hoje
+            Coloque um bot inteligente no WhatsApp do seu negócio
           </h2>
 
           <p className="max-w-2xl text-emerald-50/90">
-            Comece com páginas funcionais, CTAs que abrem em novas abas e um fluxo
-            comercial mais claro para visitantes do brasilsmart.com.
+            Crie um canal que responde, organiza e vende com mais consistência,
+            sem perder o toque humano quando sua equipe precisar entrar.
           </p>
 
           <div className="flex flex-wrap justify-center gap-4">

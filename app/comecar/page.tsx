@@ -4,10 +4,10 @@ import { SiteFooter } from "@/components/site-footer";
 import { mailLinks } from "../site-data";
 
 const checklist = [
-  "Definir número principal de atendimento",
-  "Separar perguntas frequentes, tarifas e horários",
-  "Escolher quem recebe escalonamentos humanos",
-  "Publicar os CTAs da home e rotas internas do site",
+  "Definir o número principal de atendimento no WhatsApp",
+  "Listar produtos, serviços, dúvidas frequentes e objeções comerciais",
+  "Escolher quem recebe leads qualificados ou escalonamentos humanos",
+  "Publicar os fluxos e CTAs do bot no site e nas campanhas",
 ];
 
 export default function ComecarPage() {
@@ -19,15 +19,15 @@ export default function ComecarPage() {
             Começar
           </div>
           <h1 className="max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
-            Prepare a operação e ligue sua jornada comercial no site.
+            Estruture seu negócio para vender melhor com um bot no WhatsApp.
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-emerald-50/90">
-            Esta rota transforma o botão “Começar Agora” em uma página real, pronta para orientar o cliente até o primeiro contato.
+            Esta etapa organiza a base do atendimento para que o bot responda com clareza, mantenha contexto e conduza cada conversa até a conversão.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
             <CtaLink href={mailLinks.onboarding} external>
-              Iniciar implantação por e-mail
+              Iniciar implantação
             </CtaLink>
             <CtaLink href="/demonstracao" variant="secondary">
               Abrir demonstração
@@ -57,10 +57,10 @@ export default function ComecarPage() {
           <MailPlus className="text-emerald-300" />
           <h2 className="mt-4 text-2xl font-semibold">Próximo contato</h2>
           <p className="mt-3 text-sm leading-6 text-emerald-50/85">
-            Se quiser, esta página pode virar depois um formulário real. Por agora, ela já entrega um destino funcional para o CTA final e evita botão sem ação.
+            Depois podemos transformar esta rota em formulário ou onboarding guiado. Por agora, ela já funciona como a porta de entrada para iniciar a implantação do bot.
           </p>
           <CtaLink href={mailLinks.onboarding} external variant="ghost" className="mt-6 w-full">
-            Abrir e-mail de implantação
+            Abrir contato de implantação
           </CtaLink>
         </div>
       </section>

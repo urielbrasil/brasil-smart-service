@@ -4,10 +4,10 @@ import { SiteFooter } from "@/components/site-footer";
 import { mailLinks } from "../site-data";
 
 const agenda = [
-  "Mapeamento do atendimento atual do hotel ou pousada",
-  "Demonstração do fluxo de respostas automáticas",
-  "Exemplo de qualificação de hóspedes e reservas",
-  "Próximos passos para implantação no brasilsmart.com",
+  "Mapeamento do atendimento atual do seu negócio",
+  "Demonstração do fluxo automático de conversa e qualificação",
+  "Exemplo de captação, triagem e encaminhamento de leads",
+  "Próximos passos para implantação no WhatsApp da sua operação",
 ];
 
 export default function DemonstracaoPage() {
@@ -19,12 +19,12 @@ export default function DemonstracaoPage() {
             Demonstração
           </div>
           <p className="mt-5 max-w-2xl text-lg text-emerald-50/90">
-            Veja como a Brasil Smart Service pode responder, organizar e converter atendimentos.
+            Veja como a Brasil Smart Service transforma o WhatsApp em um servidor inteligente para atender, qualificar e vender.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
             <CtaLink href={mailLinks.demo} external>
-              Solicitar demonstração por e-mail
+              Solicitar demonstração
             </CtaLink>
             <CtaLink href="/comecar" variant="secondary">
               Ver implantação
@@ -54,7 +54,7 @@ export default function DemonstracaoPage() {
             <Rocket className="text-emerald-300" />
             <h2 className="mt-4 text-2xl font-semibold">Pronto para apresentar</h2>
             <p className="mt-3 text-sm leading-6 text-emerald-50/85">
-              Esta rota pode ser usada como destino direto de anúncios, QR codes ou botões da home.
+              Esta rota funciona bem como destino direto de campanhas, botões da home, QR codes e abordagens comerciais.
             </p>
           </div>
 
@@ -62,10 +62,10 @@ export default function DemonstracaoPage() {
             <Mail className="text-emerald-700" />
             <h2 className="mt-4 text-xl font-semibold">Canal de contato</h2>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Para manter o fluxo funcional sem depender de integrações externas ainda não configuradas, o pedido de demonstração segue por e-mail.
+              Enquanto o fluxo comercial definitivo não vira formulário ou CRM, o pedido de demonstração segue por e-mail para manter o site funcional.
             </p>
             <CtaLink href={mailLinks.demo} external variant="ghost" className="mt-6 w-full">
-              Abrir e-mail de demonstração
+              Abrir contato de demonstração
             </CtaLink>
           </div>
         </div>

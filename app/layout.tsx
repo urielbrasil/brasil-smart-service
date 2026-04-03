@@ -6,7 +6,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Brasil Smart Service",
   description:
-    "Automação inteligente para hotéis e pousadas com atendimento via WhatsApp, reservas e implantação guiada.",
+    "Bot inteligente para negócios no WhatsApp com atendimento, qualificação e vendas automatizadas.",
   metadataBase: new URL("https://www.brasilsmart.com"),
   icons: {
     icon: "/favicon.ico",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Brasil Smart Service",
     description:
-      "Automação inteligente e soluções digitais para o atendimento do seu hotel.",
+      "Bot inteligente para negócios com atendimento automatizado no WhatsApp.",
     url: "https://www.brasilsmart.com",
     siteName: "Brasil Smart Service",
     locale: "pt_BR",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Brasil Smart Service",
     description:
-      "Automação inteligente e soluções digitais para o atendimento do seu hotel.",
+      "Bot inteligente para negócios com atendimento automatizado no WhatsApp.",
     images: ["/og-image.png"],
   },
 };

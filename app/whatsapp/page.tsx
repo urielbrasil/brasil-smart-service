@@ -4,9 +4,9 @@ import { SiteFooter } from "@/components/site-footer";
 import { mailLinks } from "../site-data";
 
 const highlights = [
-  "Atendimento inicial automatizado em minutos",
-  "Encaminhamento para equipe humana quando necessário",
-  "Organização de dúvidas, tarifas e disponibilidade",
+  "Atendimento inicial automatizado em poucos segundos",
+  "Qualificação e encaminhamento de oportunidades para sua equipe",
+  "Organização de dúvidas, propostas, serviços e próximos passos",
 ];
 
 export default function WhatsAppPage() {
@@ -18,15 +18,15 @@ export default function WhatsAppPage() {
             WhatsApp
           </div>
           <h1 className="max-w-3xl text-4xl font-bold leading-tight md:text-5xl">
-            Organize o contato comercial e prepare seu atendimento para o WhatsApp.
+            Transforme seu WhatsApp em um canal inteligente de atendimento e vendas.
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-emerald-50/90">
-            Como o número oficial ainda não está configurado neste repositório, esta página funciona como uma ponte segura para o visitante iniciar o contato.
+            O bot atua como servidor do seu negócio: responde clientes, apresenta soluções, coleta contexto e leva cada conversa para a etapa certa.
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
             <CtaLink href={mailLinks.sales} external>
-              Solicitar contato comercial
+              Solicitar proposta
             </CtaLink>
             <CtaLink href="/demonstracao" variant="ghost">
               Ver demonstração
@@ -54,7 +54,7 @@ export default function WhatsAppPage() {
             <ShieldCheck className="text-emerald-600" />
             <h2 className="mt-4 text-xl font-semibold">Próximo passo recomendado</h2>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Assim que você definir o número oficial da operação, basta trocar o CTA desta página por um link direto do WhatsApp e manter a navegação em nova aba.
+              Assim que o número oficial da operação estiver definido, esta rota pode apontar para um canal direto com o mesmo contexto comercial do site.
             </p>
           </div>
 
@@ -62,10 +62,10 @@ export default function WhatsAppPage() {
             <Mail className="text-emerald-700" />
             <h2 className="mt-4 text-xl font-semibold">Contato atual</h2>
             <p className="mt-3 text-sm leading-6 text-slate-600">
-              Enquanto isso, o visitante consegue abrir um e-mail pronto para iniciar a conversa sem perder a home principal.
+              Enquanto isso, o visitante pode iniciar a conversa comercial por e-mail sem quebrar o fluxo principal do site.
             </p>
             <CtaLink href={mailLinks.sales} external variant="ghost" className="mt-6 w-full">
-              Abrir canal de contato
+              Abrir contato comercial
             </CtaLink>
           </div>
         </div>
