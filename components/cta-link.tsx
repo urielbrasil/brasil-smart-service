@@ -27,8 +27,6 @@ export function CtaLink({
   return (
     <Link
       href={href}
-      target="_blank"
-      rel="noreferrer"
       prefetch={external ? false : undefined}
       className={`inline-flex items-center justify-center rounded-2xl px-6 py-3 text-sm font-semibold transition duration-200 ${variants[variant]} ${className}`.trim()}
     >

@@ -13,10 +13,10 @@ export function SiteFooter() {
         </div>
 
         <div className="flex flex-wrap gap-4">
-          <Link href={siteUrl} target="_blank" rel="noreferrer">
+          <Link href={siteUrl}>
             brasilsmart.com
           </Link>
-          <Link href={`mailto:${contactEmail}`} target="_blank" rel="noreferrer">
+          <Link href={`mailto:${contactEmail}`}>
             {contactEmail}
           </Link>
         </div>

@@ -64,13 +64,13 @@ export default function RootLayout({
             </Link>
 
             <nav className="hidden items-center gap-6 text-sm text-white/70 md:flex">
-              <Link href="/demonstracao" target="_blank" rel="noreferrer">
+              <Link href="/demonstracao">
                 Demonstração
               </Link>
-              <Link href="/whatsapp" target="_blank" rel="noreferrer">
+              <Link href="/whatsapp">
                 WhatsApp
               </Link>
-              <Link href="/comecar" target="_blank" rel="noreferrer">
+              <Link href="/comecar">
                 Começar
               </Link>
             </nav>
