@@ -1,0 +1,26 @@
+import Link from "next/link";
+import { contactEmail, siteUrl } from "@/app/site-data";
+
+export function SiteFooter() {
+  return (
+    <footer className="border-t border-slate-200 bg-slate-950 px-6 py-10 text-sm text-slate-400">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="font-semibold text-white">
+            © {new Date().getFullYear()} Brasil Smart Service
+          </p>
+          <p>Automação inteligente para hotéis e pousadas.</p>
+        </div>
+
+        <div className="flex flex-wrap gap-4">
+          <Link href={siteUrl} target="_blank" rel="noreferrer">
+            brasilsmart.com
+          </Link>
+          <Link href={`mailto:${contactEmail}`} target="_blank" rel="noreferrer">
+            {contactEmail}
+          </Link>
+        </div>
+      </div>
+    </footer>
+  );
+}
