@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { MessageCircle, Bot, Hotel, CheckCircle, ArrowUpRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { CtaLink } from "@/components/cta-link";
@@ -74,7 +75,16 @@ export default function BrasilSmartServiceWebsite() {
             className="relative rounded-[2rem] border border-white/15 bg-white/10 p-8 shadow-2xl backdrop-blur"
           >
             <div className="absolute inset-x-10 top-0 h-px bg-gradient-to-r from-transparent via-white/60 to-transparent" />
-            <Bot size={60} />
+            <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-slate-950/20 shadow-[0_24px_60px_rgba(2,6,23,0.28)]">
+              <Image
+                src="/og-image.png"
+                alt="Logo e identidade visual da Brasil Smart Service"
+                width={1200}
+                height={630}
+                priority
+                className="h-auto w-full object-cover"
+              />
+            </div>
             <h2 className="mt-4 text-2xl font-semibold">
               Seu recepcionista inteligente
             </h2>
