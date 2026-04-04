@@ -9,7 +9,10 @@ export const metadata: Metadata = {
     "Bot inteligente para negocios no WhatsApp com atendimento, qualificação e vendas automatizadas.",
   metadataBase: new URL("https://www.brasilsmart.com"),
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
     shortcut: "/favicon.ico",
     apple: "/icon.png",
   },
