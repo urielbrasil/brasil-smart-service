@@ -1,5 +1,12 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV !== "production";
+const scriptSrc = ["'self'", "'unsafe-inline'"];
+
+if (isDev) {
+  scriptSrc.push("'unsafe-eval'");
+}
+
 const securityHeaders = [
   {
     key: "Content-Security-Policy",
@@ -10,7 +17,7 @@ const securityHeaders = [
       "form-action 'self' mailto:",
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      `script-src ${scriptSrc.join(" ")}`,
       "style-src 'self' 'unsafe-inline'",
       "connect-src 'self'",
       "object-src 'none'",
@@ -32,6 +39,26 @@ const securityHeaders = [
   {
     key: "Permissions-Policy",
     value: "camera=(), microphone=(), geolocation=()",
+  },
+  {
+    key: "Strict-Transport-Security",
+    value: "max-age=31536000; includeSubDomains; preload",
+  },
+  {
+    key: "Cross-Origin-Opener-Policy",
+    value: "same-origin",
+  },
+  {
+    key: "Cross-Origin-Resource-Policy",
+    value: "same-origin",
+  },
+  {
+    key: "X-DNS-Prefetch-Control",
+    value: "off",
+  },
+  {
+    key: "X-Permitted-Cross-Domain-Policies",
+    value: "none",
   },
 ];
 
