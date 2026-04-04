@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { translations } from "@/app/translations";
+import { useLanguage } from "@/components/language-provider";
 
 export function AdminLoginForm({ nextPath }: { nextPath: string }) {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const copy = translations[locale].admin.login.form;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,14 +32,14 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
       const payload = (await response.json()) as { ok?: boolean; error?: string };
 
       if (!response.ok || !payload.ok) {
-        setError(payload.error || "Falha no login.");
+        setError(payload.error || copy.genericError);
         return;
       }
 
       router.push(nextPath);
       router.refresh();
     } catch {
-      setError("Não foi possível concluir o login.");
+      setError(copy.networkError);
     } finally {
       setLoading(false);
     }
@@ -44,26 +48,26 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
   return (
     <form onSubmit={handleSubmit} className="grid gap-4">
       <label className="grid gap-2 text-sm">
-        <span className="font-medium text-slate-700">E-mail corporativo</span>
+        <span className="font-medium text-slate-700">{copy.emailLabel}</span>
         <input
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           className="rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none ring-0 transition focus:border-emerald-500"
-          placeholder="admin@brasilsmart.com"
+          placeholder={copy.emailPlaceholder}
           autoComplete="email"
           required
         />
       </label>
 
       <label className="grid gap-2 text-sm">
-        <span className="font-medium text-slate-700">Senha</span>
+        <span className="font-medium text-slate-700">{copy.passwordLabel}</span>
         <input
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           className="rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none ring-0 transition focus:border-emerald-500"
-          placeholder="Sua senha de administrador"
+          placeholder={copy.passwordPlaceholder}
           autoComplete="current-password"
           required
         />
@@ -80,7 +84,7 @@ export function AdminLoginForm({ nextPath }: { nextPath: string }) {
         disabled={loading}
         className="inline-flex items-center justify-center rounded-2xl bg-emerald-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-emerald-800 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {loading ? "Entrando..." : "Entrar no painel"}
+        {loading ? copy.loading : copy.submit}
       </button>
     </form>
   );

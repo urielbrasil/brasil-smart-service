@@ -125,6 +125,58 @@ export const translations = {
         "Depois podemos transformar esta rota em formulário ou onboarding guiado. Por agora, ela já funciona como a porta de entrada para iniciar a implantação do bot.",
       nextButton: "Abrir contato de implantação",
     },
+    admin: {
+      login: {
+        badge: "Administradores certificados",
+        title: "Acesso administrativo Brasil Smart",
+        description:
+          "Estrutura inicial de login para equipe administrativa da Brasil Smart. A autenticação real fica vinculada ao servidor.",
+        highlights: [
+          "Sessão HTTP-only com proteção de rota em `/admin`.",
+          "Credenciais não ficam no frontend; o login depende do servidor.",
+          "Estrutura pronta para expansão futura do login dos clientes.",
+        ],
+        formTitle: "Entrar",
+        formDescription:
+          "Use as credenciais administrativas configuradas para a operação da Brasil Smart.",
+        form: {
+          emailLabel: "E-mail corporativo",
+          emailPlaceholder: "contato@brasilsmart.com",
+          passwordLabel: "Senha",
+          passwordPlaceholder: "Sua senha de administrador",
+          submit: "Entrar no painel",
+          loading: "Entrando...",
+          genericError: "Falha no login.",
+          networkError: "Não foi possível concluir o login.",
+        },
+      },
+      dashboard: {
+        badge: "Painel administrativo",
+        title: "Área restrita de administradores",
+        description:
+          "Estrutura inicial publicada com proteção de rota e sessão segura para equipe interna da Brasil Smart.",
+        logout: "Sair",
+        panels: [
+          {
+            title: "Administradores",
+            description:
+              "Base pronta para gerenciar acessos internos certificados da Brasil Smart.",
+          },
+          {
+            title: "Configuração",
+            description:
+              "Espaço reservado para políticas, integrações e parâmetros do bot.",
+          },
+          {
+            title: "Atendimento",
+            description:
+              "Área futura para monitorar conversas, fluxos e handoff comercial.",
+          },
+        ],
+        note:
+          "Esta é a estrutura administrativa inicial. O próximo passo técnico é substituir as credenciais por integração com banco, controle de perfis, recuperação de senha e trilha de auditoria.",
+      },
+    },
   },
   es: {
     nav: {
@@ -243,6 +295,58 @@ export const translations = {
       nextDescription:
         "Despues podemos convertir esta ruta en formulario u onboarding guiado. Por ahora, ya funciona como puerta de entrada para iniciar la implementación del bot.",
       nextButton: "Abrir contacto de implementación",
+    },
+    admin: {
+      login: {
+        badge: "Administradores certificados",
+        title: "Acceso administrativo Brasil Smart",
+        description:
+          "Estructura inicial de login para el equipo administrativo de Brasil Smart. La autenticación real depende del servidor.",
+        highlights: [
+          "Sesión HTTP-only con protección de ruta en `/admin`.",
+          "Las credenciales no quedan en el frontend; el login depende del servidor.",
+          "Estructura lista para la futura expansión del acceso de clientes.",
+        ],
+        formTitle: "Ingresar",
+        formDescription:
+          "Usa las credenciales administrativas configuradas para la operación de Brasil Smart.",
+        form: {
+          emailLabel: "Correo corporativo",
+          emailPlaceholder: "contato@brasilsmart.com",
+          passwordLabel: "Contraseña",
+          passwordPlaceholder: "Tu contraseña de administrador",
+          submit: "Entrar al panel",
+          loading: "Ingresando...",
+          genericError: "Fallo en el login.",
+          networkError: "No fue posible completar el login.",
+        },
+      },
+      dashboard: {
+        badge: "Panel administrativo",
+        title: "Área restringida de administradores",
+        description:
+          "Estructura inicial publicada con protección de ruta y sesión segura para el equipo interno de Brasil Smart.",
+        logout: "Salir",
+        panels: [
+          {
+            title: "Administradores",
+            description:
+              "Base lista para gestionar accesos internos certificados de Brasil Smart.",
+          },
+          {
+            title: "Configuración",
+            description:
+              "Espacio reservado para políticas, integraciones y parámetros del bot.",
+          },
+          {
+            title: "Atención",
+            description:
+              "Área futura para monitorear conversaciones, flujos y handoff comercial.",
+          },
+        ],
+        note:
+          "Esta es la estructura administrativa inicial. El siguiente paso técnico es sustituir las credenciales por integración con base de datos, control de perfiles, recuperación de contraseña y auditoría.",
+      },
     },
   },
   en: {
@@ -363,6 +467,58 @@ export const translations = {
         "Later this route can become a form or guided onboarding. For now, it already works as the entry point to start bot deployment.",
       nextButton: "Open onboarding contact",
     },
+    admin: {
+      login: {
+        badge: "Certified administrators",
+        title: "Brasil Smart admin access",
+        description:
+          "Initial login structure for the Brasil Smart administrative team. Real authentication is handled by the server.",
+        highlights: [
+          "HTTP-only session with route protection on `/admin`.",
+          "Credentials do not live in the frontend; login depends on the server.",
+          "Structure is ready for future customer login expansion.",
+        ],
+        formTitle: "Sign in",
+        formDescription:
+          "Use the administrative credentials configured for the Brasil Smart operation.",
+        form: {
+          emailLabel: "Corporate email",
+          emailPlaceholder: "contato@brasilsmart.com",
+          passwordLabel: "Password",
+          passwordPlaceholder: "Your administrator password",
+          submit: "Enter dashboard",
+          loading: "Signing in...",
+          genericError: "Login failed.",
+          networkError: "Could not complete login.",
+        },
+      },
+      dashboard: {
+        badge: "Admin dashboard",
+        title: "Restricted administrator area",
+        description:
+          "Initial structure published with route protection and secure session for the Brasil Smart internal team.",
+        logout: "Logout",
+        panels: [
+          {
+            title: "Administrators",
+            description:
+              "Base structure ready to manage certified internal Brasil Smart access.",
+          },
+          {
+            title: "Configuration",
+            description:
+              "Reserved space for policies, integrations, and bot parameters.",
+          },
+          {
+            title: "Support",
+            description:
+              "Future area to monitor conversations, flows, and commercial handoff.",
+          },
+        ],
+        note:
+          "This is the initial admin structure. The next technical step is replacing credentials with database integration, role control, password recovery, and audit trail.",
+      },
+    },
   },
 } satisfies Record<
   Locale,
@@ -425,6 +581,34 @@ export const translations = {
       nextTitle: string;
       nextDescription: string;
       nextButton: string;
+    };
+    admin: {
+      login: {
+        badge: string;
+        title: string;
+        description: string;
+        highlights: string[];
+        formTitle: string;
+        formDescription: string;
+        form: {
+          emailLabel: string;
+          emailPlaceholder: string;
+          passwordLabel: string;
+          passwordPlaceholder: string;
+          submit: string;
+          loading: string;
+          genericError: string;
+          networkError: string;
+        };
+      };
+      dashboard: {
+        badge: string;
+        title: string;
+        description: string;
+        logout: string;
+        panels: Array<{ title: string; description: string }>;
+        note: string;
+      };
     };
   }
 >;

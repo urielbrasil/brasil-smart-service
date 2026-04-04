@@ -1,9 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { translations } from "@/app/translations";
+import { useLanguage } from "@/components/language-provider";
 
 export function AdminLogoutButton() {
   const router = useRouter();
+  const { locale } = useLanguage();
+  const copy = translations[locale].admin.dashboard;
 
   async function handleLogout() {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -17,7 +21,7 @@ export function AdminLogoutButton() {
       onClick={handleLogout}
       className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white hover:text-slate-950"
     >
-      Sair
+      {copy.logout}
     </button>
   );
 }
