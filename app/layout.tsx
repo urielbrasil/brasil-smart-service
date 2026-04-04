@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
 import "./globals.css";
+import { LanguageProvider } from "@/components/language-provider";
+import { SiteHeader } from "@/components/site-header";
 
 export const metadata: Metadata = {
   title: "Brasil Smart Service",
   description:
-    "Bot inteligente para negócios no WhatsApp com atendimento, qualificação e vendas automatizadas.",
+    "Bot inteligente para negocios no WhatsApp com atendimento, qualificação e vendas automatizadas.",
   metadataBase: new URL("https://www.brasilsmart.com"),
   icons: {
     icon: "/favicon.ico",
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Brasil Smart Service",
     description:
-      "Bot inteligente para negócios com atendimento automatizado no WhatsApp.",
+      "Bot inteligente para negocios com atendimento automatizado no WhatsApp.",
     url: "https://www.brasilsmart.com",
     siteName: "Brasil Smart Service",
     locale: "pt_BR",
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Brasil Smart Service",
     description:
-      "Bot inteligente para negócios com atendimento automatizado no WhatsApp.",
+      "Bot inteligente para negocios com atendimento automatizado no WhatsApp.",
     images: ["/og-image.png"],
   },
 };
@@ -46,38 +46,10 @@ export default function RootLayout({
   return (
     <html lang="pt-BR" className="h-full antialiased">
       <body className="min-h-full bg-[var(--background)] text-[var(--foreground)]">
-        <header className="border-b border-white/10 bg-slate-950/90 backdrop-blur">
-          <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-            <Link
-              href="/"
-              className="flex items-center gap-3 text-sm font-semibold tracking-[0.24em] text-white uppercase"
-            >
-              <Image
-                src="/icon.png"
-                alt="Brasil Smart Service"
-                width={40}
-                height={40}
-                priority
-                className="rounded-xl"
-              />
-              Brasil Smart Service
-            </Link>
-
-            <nav className="hidden items-center gap-6 text-sm text-white/70 md:flex">
-              <Link href="/demonstracao">
-                Demonstração
-              </Link>
-              <Link href="/whatsapp">
-                WhatsApp
-              </Link>
-              <Link href="/comecar">
-                Começar
-              </Link>
-            </nav>
-          </div>
-        </header>
-
-        <main>{children}</main>
+        <LanguageProvider>
+          <SiteHeader />
+          <main>{children}</main>
+        </LanguageProvider>
       </body>
     </html>
   );
