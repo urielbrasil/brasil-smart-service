@@ -12,6 +12,7 @@ export const translations = {
       demo: "Demonstração",
       whatsapp: "WhatsApp",
       start: "Começar",
+      admin: "Admin",
       language: "Idioma",
     },
     footer: "Bot inteligente para atendimento, qualificação e vendas no WhatsApp.",
@@ -130,6 +131,7 @@ export const translations = {
       demo: "Demostración",
       whatsapp: "WhatsApp",
       start: "Empezar",
+      admin: "Admin",
       language: "Idioma",
     },
     footer: "Bot inteligente para atencion, calificacion y ventas en WhatsApp.",
@@ -248,6 +250,7 @@ export const translations = {
       demo: "Demo",
       whatsapp: "WhatsApp",
       start: "Start",
+      admin: "Admin",
       language: "Language",
     },
     footer: "Smart bot for WhatsApp support, lead qualification, and sales.",
@@ -364,7 +367,7 @@ export const translations = {
 } satisfies Record<
   Locale,
   {
-    nav: { demo: string; whatsapp: string; start: string; language: string };
+    nav: { demo: string; whatsapp: string; start: string; admin: string; language: string };
     footer: string;
     hero: {
       badge: string;

@@ -32,6 +32,7 @@ export function SiteHeader() {
             <Link href="/demonstracao">{copy.nav.demo}</Link>
             <Link href="/whatsapp">{copy.nav.whatsapp}</Link>
             <Link href="/comecar">{copy.nav.start}</Link>
+            <Link href="/admin/login">{copy.nav.admin}</Link>
           </nav>
 
           <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/5 p-1">
