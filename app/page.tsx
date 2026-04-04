@@ -16,8 +16,8 @@ export default function BrasilSmartServiceWebsite() {
   const copy = translations[locale];
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_28%),linear-gradient(180deg,_#f8fafc_0%,_#eef6f1_42%,_#ffffff_100%)] pt-28 text-slate-900">
-      <section className="overflow-hidden bg-[linear-gradient(135deg,_#065f46_0%,_#022c22_52%,_#020617_100%)] px-6 py-20 text-white">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_28%),linear-gradient(180deg,_#f8fafc_0%,_#eef6f1_42%,_#ffffff_100%)] text-slate-900">
+      <section className="overflow-hidden bg-[linear-gradient(135deg,_#065f46_0%,_#022c22_52%,_#020617_100%)] px-6 pb-20 pt-32 text-white md:pt-36">
         <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-2">
           <div className="text-center md:text-left">
             <div className="mb-6 flex justify-center md:justify-start">
