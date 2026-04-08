@@ -1,9 +1,13 @@
 import { NextResponse } from "next/server";
 import {
   createAdminSessionValue,
-  getAdminSessionCookieName,
+  hasAdminAuthConfig,
   validateAdminCredentials,
 } from "@/lib/admin-auth";
+import {
+  getAdminSessionCookieName,
+  getAdminSessionTtlSeconds,
+} from "@/lib/admin-session";
 
 export async function POST(request: Request) {
   const contentType = request.headers.get("content-type") || "";
@@ -23,6 +27,20 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     username = String(formData.get("username") || formData.get("email") || "");
     password = String(formData.get("password") || "");
+  }
+
+  if (!hasAdminAuthConfig()) {
+    const message =
+      "Login administrativo indisponível. Configure ADMIN_PASSWORD e ADMIN_SESSION_SECRET.";
+
+    if (contentType.includes("application/json")) {
+      return NextResponse.json({ ok: false, error: message }, { status: 503 });
+    }
+
+    return NextResponse.redirect(
+      new URL(`/admin/login?error=${encodeURIComponent(message)}`, request.url),
+      { status: 303 },
+    );
   }
 
   try {
@@ -53,7 +71,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const sessionValue = createAdminSessionValue(username);
+  const sessionValue = await createAdminSessionValue(username);
 
   if (contentType.includes("application/json")) {
     const response = NextResponse.json({ ok: true });
@@ -64,7 +82,7 @@ export async function POST(request: Request) {
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 12,
+      maxAge: getAdminSessionTtlSeconds(),
     });
     return response;
   }
@@ -80,7 +98,7 @@ export async function POST(request: Request) {
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
     path: "/",
-    maxAge: 60 * 60 * 12,
+    maxAge: getAdminSessionTtlSeconds(),
   });
 
   return response;

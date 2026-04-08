@@ -1,58 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
-
-const ADMIN_SESSION_COOKIE = "brasilsmart_admin_session";
-
-function getAdminSecret() {
-  return process.env.ADMIN_SESSION_SECRET;
-}
-
-async function sign(payload: string, secret: string) {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"],
-  );
-
-  const signature = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    new TextEncoder().encode(payload),
-  );
-
-  return Array.from(new Uint8Array(signature))
-    .map((value) => value.toString(16).padStart(2, "0"))
-    .join("");
-}
-
-async function hasValidAdminSession(token?: string) {
-  const secret = getAdminSecret();
-
-  if (!token || !secret) {
-    return false;
-  }
-
-  try {
-    const decoded = Buffer.from(token, "base64url").toString("utf8");
-    const [username, expiresAtRaw, signature] = decoded.split(".");
-
-    if (!username || !expiresAtRaw || !signature) {
-      return false;
-    }
-
-    const expectedSignature = await sign(`${username}.${expiresAtRaw}`, secret);
-
-    if (signature !== expectedSignature) {
-      return false;
-    }
-
-    const expiresAt = Number(expiresAtRaw);
-    return Number.isFinite(expiresAt) && Date.now() <= expiresAt;
-  } catch {
-    return false;
-  }
-}
+import {
+  getAdminSessionCookieName,
+  verifySignedAdminSessionValue,
+} from "@/lib/admin-session";
+import { contactEmail } from "@/lib/site-config";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -61,14 +12,22 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const secret = getAdminSecret();
-
-  if (!secret) {
+  if (
+    !process.env.ADMIN_SESSION_SECRET ||
+    !(process.env.ADMIN_PASSWORD || process.env.ADMIN_LOGIN_PASSWORD)
+  ) {
     return NextResponse.next();
   }
 
-  const sessionToken = request.cookies.get(ADMIN_SESSION_COOKIE)?.value;
-  const hasSession = await hasValidAdminSession(sessionToken);
+  const sessionToken = request.cookies.get(getAdminSessionCookieName())?.value;
+  const hasSession = await verifySignedAdminSessionValue({
+    secret: process.env.ADMIN_SESSION_SECRET,
+    value: sessionToken,
+    expectedUsername:
+      (process.env.ADMIN_LOGIN_EMAIL || process.env.ADMIN_USERNAME || contactEmail)
+        .trim()
+        .toLowerCase(),
+  });
 
   if (pathname === "/admin/login") {
     if (hasSession) {

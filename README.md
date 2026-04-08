@@ -1,55 +1,63 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Brasil Smart Service
 
-## Admin Railway
+Site institucional e painel administrativo da Brasil Smart Service, publicado na Vercel e com área restrita para visualizar e operar bots hospedados na Railway.
 
-This project now includes an `/admin` area for managing WhatsApp bot services on Railway.
+## O que o projeto faz
 
-Required environment variables for the admin panel:
+- apresenta a proposta comercial da Brasil Smart Service
+- oferece páginas de demonstração, implantação e contato
+- protege a rota `/admin` com sessão HTTP-only
+- lista bots/serviços conectados ao projeto Railway configurado
+- permite criar, reativar e desabilitar bots no ambiente selecionado
 
-- `ADMIN_USERNAME`
+## Stack atual
+
+- Next.js 16
+- React 19
+- Tailwind CSS 4
+- Railway GraphQL API para leitura e operação dos serviços
+
+## Variáveis de ambiente
+
+Obrigatórias para login admin:
+
 - `ADMIN_PASSWORD`
 - `ADMIN_SESSION_SECRET`
+
+O e-mail de login padrão já é `contato@brasilsmart.com`. Se quiser trocar, defina:
+
+- `ADMIN_LOGIN_EMAIL`
+
+Obrigatórias para integração com Railway:
+
 - `RAILWAY_TOKEN`
 - `RAILWAY_PROJECT_ID`
 
-Optional Railway settings:
+Opcionais:
 
 - `RAILWAY_ENVIRONMENT_ID`
-- `RAILWAY_BOT_REPO` default: `urielbrasil/brasil-smart-bot`
-- `RAILWAY_BOT_BRANCH` default: `main`
-- `RAILWAY_BOT_SERVICE_PREFIX` to filter which services appear as bots
+- `RAILWAY_BOT_REPO` padrão: `urielbrasil/brasil-smart-bot`
+- `RAILWAY_BOT_BRANCH` padrão: `main`
+- `RAILWAY_BOT_SERVICE_PREFIX` para filtrar quais serviços aparecem no painel
 
-## Getting Started
-
-First, run the development server:
+## Desenvolvimento
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Admin
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- Login em `/admin/login`
+- Usuário padrão: `contato@brasilsmart.com`
+- O painel mostra resumo operacional, status de deploy, health check e links públicos dos serviços Railway
 
-## Learn More
+## Melhorias estruturais já consideradas
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- autenticação centralizada entre páginas, rotas e `proxy`
+- normalização das URLs públicas da Railway antes de health check e navegação
+- remoção de componentes admin client-side que estavam sem uso
+- documentação alinhada ao produto real, sem boilerplate do create-next-app

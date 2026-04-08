@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
+import { contactEmail } from "@/lib/site-config";
 
 export default async function AdminLoginPage({
   searchParams,
@@ -23,7 +24,8 @@ export default async function AdminLoginPage({
             Entrar no painel
           </h1>
           <p className="mt-3 text-sm leading-6 text-slate-600">
-            Acesse a área de gerenciamento dos bots conectados à Railway.
+            Acesse a área administrativa conectada à Railway com o e-mail corporativo{" "}
+            <strong>{contactEmail}</strong>.
           </p>
         </div>
 
@@ -36,12 +38,14 @@ export default async function AdminLoginPage({
         <form action="/api/admin/login" method="post" className="space-y-4">
           <label className="block">
             <span className="mb-2 block text-sm font-medium text-slate-700">
-              Usuário ou e-mail
+              E-mail administrativo
             </span>
             <input
               name="username"
-              type="text"
+              type="email"
               required
+              defaultValue={contactEmail}
+              autoComplete="username"
               className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none ring-0 transition focus:border-emerald-500"
             />
           </label>
@@ -54,6 +58,7 @@ export default async function AdminLoginPage({
               name="password"
               type="password"
               required
+              autoComplete="current-password"
               className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none ring-0 transition focus:border-emerald-500"
             />
           </label>

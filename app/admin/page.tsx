@@ -32,6 +32,30 @@ function formatHealthStatus(status: "online" | "offline" | "unknown") {
   return "Health indisponível";
 }
 
+function getStatusTone(status: string) {
+  if (["SUCCESS"].includes(status)) {
+    return "border-emerald-200 bg-emerald-50 text-emerald-800";
+  }
+
+  if (["FAILED", "CRASHED", "REMOVED", "NOT_DEPLOYED"].includes(status)) {
+    return "border-rose-200 bg-rose-50 text-rose-700";
+  }
+
+  return "border-amber-200 bg-amber-50 text-amber-800";
+}
+
+function getHealthTone(status: "online" | "offline" | "unknown") {
+  if (status === "online") {
+    return "border-emerald-200 bg-emerald-50 text-emerald-800";
+  }
+
+  if (status === "offline") {
+    return "border-rose-200 bg-rose-50 text-rose-700";
+  }
+
+  return "border-slate-200 bg-slate-100 text-slate-700";
+}
+
 function formatDate(value?: string) {
   if (!value) {
     return "Sem registro";
@@ -83,7 +107,7 @@ export default async function AdminPage({
     );
   }
 
-  const { bots, environmentName, projectName } = dashboard;
+  const { bots, environmentName, projectName, refreshedAt, summary } = dashboard;
 
   return (
     <section className="min-h-[calc(100vh-73px)] bg-[linear-gradient(180deg,_#f8fafc_0%,_#eef6f1_45%,_#ffffff_100%)] px-6 py-16">
@@ -99,6 +123,9 @@ export default async function AdminPage({
             <p className="mt-3 text-sm leading-6 text-slate-600">
               Projeto: <strong>{projectName}</strong> · Ambiente:{" "}
               <strong>{environmentName}</strong>
+            </p>
+            <p className="mt-2 text-sm leading-6 text-slate-500">
+              Última leitura do painel: <strong>{formatDate(refreshedAt)}</strong>
             </p>
           </div>
 
@@ -123,6 +150,48 @@ export default async function AdminPage({
             {error}
           </div>
         ) : null}
+
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          <article className="rounded-[1.75rem] border border-slate-200 bg-white p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+            <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase">
+              Serviços monitorados
+            </p>
+            <p className="mt-4 text-3xl font-bold text-slate-900">{summary.totalBots}</p>
+            <p className="mt-2 text-sm text-slate-600">Total listado no ambiente atual.</p>
+          </article>
+
+          <article className="rounded-[1.75rem] border border-emerald-200 bg-emerald-50 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+            <p className="text-xs font-semibold tracking-[0.18em] text-emerald-800 uppercase">
+              Deploys ativos
+            </p>
+            <p className="mt-4 text-3xl font-bold text-emerald-950">{summary.activeBots}</p>
+            <p className="mt-2 text-sm text-emerald-900/80">
+              Serviços com deploy publicado ou em andamento.
+            </p>
+          </article>
+
+          <article className="rounded-[1.75rem] border border-emerald-200 bg-white p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+            <p className="text-xs font-semibold tracking-[0.18em] text-slate-500 uppercase">
+              Health OK
+            </p>
+            <p className="mt-4 text-3xl font-bold text-slate-900">{summary.onlineBots}</p>
+            <p className="mt-2 text-sm text-slate-600">
+              Serviços respondendo no endpoint `/health`.
+            </p>
+          </article>
+
+          <article className="rounded-[1.75rem] border border-rose-200 bg-rose-50 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.06)]">
+            <p className="text-xs font-semibold tracking-[0.18em] text-rose-700 uppercase">
+              Exigem atenção
+            </p>
+            <p className="mt-4 text-3xl font-bold text-rose-950">
+              {summary.botsRequiringAttention}
+            </p>
+            <p className="mt-2 text-sm text-rose-900/80">
+              Falha, sem deploy ou health com erro.
+            </p>
+          </article>
+        </div>
 
         <div className="grid gap-8 lg:grid-cols-[1.1fr_1.7fr]">
           <div className="rounded-[2rem] border border-emerald-100 bg-white p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
@@ -221,6 +290,10 @@ export default async function AdminPage({
                   Aqui voce acompanha status do deploy, health check e pode
                   desabilitar ou reativar cada bot.
                 </p>
+                <p className="mt-2 text-sm leading-6 text-slate-500">
+                  Último deploy registrado:{" "}
+                  <strong>{formatDate(summary.lastDeploymentAt)}</strong>
+                </p>
               </div>
             </div>
 
@@ -245,13 +318,17 @@ export default async function AdminPage({
                           {bot.name}
                         </h3>
                         <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium">
-                          <span className="rounded-full bg-white px-3 py-1 text-slate-700">
+                          <span
+                            className={`rounded-full border px-3 py-1 ${getStatusTone(bot.deploymentStatus)}`}
+                          >
                             {formatBotStatus(bot.deploymentStatus)}
                           </span>
-                          <span className="rounded-full bg-white px-3 py-1 text-slate-700">
+                          <span
+                            className={`rounded-full border px-3 py-1 ${getHealthTone(bot.healthStatus)}`}
+                          >
                             {formatHealthStatus(bot.healthStatus)}
                           </span>
-                          <span className="rounded-full bg-white px-3 py-1 text-slate-700">
+                          <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-slate-700">
                             Replicas: {bot.replicas}
                           </span>
                         </div>
@@ -268,6 +345,19 @@ export default async function AdminPage({
                               className="font-medium text-emerald-700"
                             >
                               abrir bot
+                            </a>
+                          </p>
+                        ) : null}
+                        {bot.staticUrl ? (
+                          <p className="mt-2 text-sm text-slate-600">
+                            Static URL:{" "}
+                            <a
+                              href={bot.staticUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-medium text-emerald-700"
+                            >
+                              abrir endpoint
                             </a>
                           </p>
                         ) : null}

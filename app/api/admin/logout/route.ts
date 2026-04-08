@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getAdminSessionCookieName } from "@/lib/admin-auth";
+import { getAdminSessionCookieName } from "@/lib/admin-session";
 
 export async function POST(request: Request) {
   const contentType = request.headers.get("content-type") || "";

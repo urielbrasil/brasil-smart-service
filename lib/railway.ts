@@ -71,6 +71,14 @@ export type BotSummary = {
   healthStatus: "online" | "offline" | "unknown";
 };
 
+export type BotDashboardSummary = {
+  totalBots: number;
+  activeBots: number;
+  onlineBots: number;
+  botsRequiringAttention: number;
+  lastDeploymentAt?: string;
+};
+
 export type CreateBotInput = {
   name: string;
   whatsappVerifyToken: string;
@@ -245,7 +253,13 @@ async function getHealthStatus(url?: string | null): Promise<BotSummary["healthS
   }
 
   try {
-    const response = await fetch(`${url.replace(/\/$/, "")}/health`, {
+    const publicUrl = normalizePublicUrl(url);
+
+    if (!publicUrl) {
+      return "unknown";
+    }
+
+    const response = await fetch(`${publicUrl.replace(/\/$/, "")}/health`, {
       cache: "no-store",
       signal: AbortSignal.timeout(5000),
     });
@@ -254,6 +268,18 @@ async function getHealthStatus(url?: string | null): Promise<BotSummary["healthS
   } catch {
     return "unknown";
   }
+}
+
+function normalizePublicUrl(url?: string | null) {
+  if (!url) {
+    return undefined;
+  }
+
+  if (/^https?:\/\//i.test(url)) {
+    return url;
+  }
+
+  return `https://${url}`;
 }
 
 export async function listBots() {
@@ -272,7 +298,8 @@ export async function listBots() {
 
       const deploymentStatus =
         instance?.latestDeployment?.status || deployment?.status || "NOT_DEPLOYED";
-      const deploymentUrl = deployment?.url || undefined;
+      const deploymentUrl = normalizePublicUrl(deployment?.url);
+      const staticUrl = normalizePublicUrl(deployment?.staticUrl);
 
       return {
         id: service.id,
@@ -284,16 +311,55 @@ export async function listBots() {
         deploymentCreatedAt:
           instance?.latestDeployment?.createdAt || deployment?.createdAt || undefined,
         deploymentUrl,
-        staticUrl: deployment?.staticUrl || undefined,
+        staticUrl,
         healthStatus: await getHealthStatus(deploymentUrl),
       } satisfies BotSummary;
     }),
+  );
+
+  const summary = bots.reduce<BotDashboardSummary>(
+    (accumulator, bot) => {
+      accumulator.totalBots += 1;
+
+      if (!["REMOVED", "NOT_DEPLOYED"].includes(bot.deploymentStatus)) {
+        accumulator.activeBots += 1;
+      }
+
+      if (bot.healthStatus === "online") {
+        accumulator.onlineBots += 1;
+      }
+
+      if (
+        ["FAILED", "CRASHED", "REMOVED", "NOT_DEPLOYED"].includes(bot.deploymentStatus) ||
+        bot.healthStatus === "offline"
+      ) {
+        accumulator.botsRequiringAttention += 1;
+      }
+
+      if (
+        bot.deploymentCreatedAt &&
+        (!accumulator.lastDeploymentAt ||
+          new Date(bot.deploymentCreatedAt) > new Date(accumulator.lastDeploymentAt))
+      ) {
+        accumulator.lastDeploymentAt = bot.deploymentCreatedAt;
+      }
+
+      return accumulator;
+    },
+    {
+      totalBots: 0,
+      activeBots: 0,
+      onlineBots: 0,
+      botsRequiringAttention: 0,
+    },
   );
 
   return {
     projectName: project.name,
     environmentName: environment.name,
     environmentId: environment.id,
+    refreshedAt: new Date().toISOString(),
+    summary,
     bots: bots.sort((a, b) => a.name.localeCompare(b.name, "pt-BR")),
   };
 }

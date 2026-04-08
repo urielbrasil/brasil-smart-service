@@ -1,5 +1,6 @@
-export const siteUrl = "https://www.brasilsmart.com";
-export const contactEmail = "contato@brasilsmart.com";
+import { contactEmail, siteUrl } from "@/lib/site-config";
+
+export { contactEmail, siteUrl };
 
 export const mailLinks = {
   demo: `mailto:${contactEmail}?subject=Quero%20uma%20demonstra%C3%A7%C3%A3o%20da%20Brasil%20Smart%20Service`,
