@@ -7,6 +7,9 @@ type RailwayConfig = {
   prefix?: string;
 };
 
+const DEFAULT_RAILWAY_PROJECT_ID = "778513bd-8fa5-4e7e-9fbc-54ec508ad549";
+const DEFAULT_RAILWAY_ENVIRONMENT_ID = "88db572b-1b9c-468b-8dc7-58714cf98456";
+
 type ProjectQueryResult = {
   project: {
     id: string;
@@ -90,18 +93,20 @@ export type CreateBotInput = {
 
 function getRailwayConfig(): RailwayConfig {
   const token = process.env.RAILWAY_TOKEN;
-  const projectId = process.env.RAILWAY_PROJECT_ID;
+  const projectId =
+    process.env.RAILWAY_PROJECT_ID || DEFAULT_RAILWAY_PROJECT_ID;
 
-  if (!token || !projectId) {
+  if (!token) {
     throw new Error(
-      "Missing Railway configuration. Set RAILWAY_TOKEN and RAILWAY_PROJECT_ID.",
+      "Missing Railway configuration. Set RAILWAY_TOKEN.",
     );
   }
 
   return {
     token,
     projectId,
-    environmentId: process.env.RAILWAY_ENVIRONMENT_ID,
+    environmentId:
+      process.env.RAILWAY_ENVIRONMENT_ID || DEFAULT_RAILWAY_ENVIRONMENT_ID,
     repo: process.env.RAILWAY_BOT_REPO || "urielbrasil/brasil-smart-bot",
     branch: process.env.RAILWAY_BOT_BRANCH || "main",
     prefix: process.env.RAILWAY_BOT_SERVICE_PREFIX || undefined,

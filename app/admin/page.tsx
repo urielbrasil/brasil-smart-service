@@ -94,8 +94,9 @@ export default async function AdminPage({
             {message}
           </p>
           <p className="mt-4 text-sm text-slate-600">
-            Verifique as envs do site: `RAILWAY_TOKEN`, `RAILWAY_PROJECT_ID` e,
-            se necessário, `RAILWAY_ENVIRONMENT_ID`.
+            Verifique a env `RAILWAY_TOKEN` no projeto da Vercel. Os IDs do
+            projeto e do ambiente principal da Railway já estão configurados no
+            app como fallback.
           </p>
           <div className="mt-6">
             <Link href="/admin/login" className="text-sm font-medium text-emerald-700">
