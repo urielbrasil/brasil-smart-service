@@ -29,6 +29,26 @@ async function sign(payload: string, secret: string) {
     .join("");
 }
 
+function serializePayload(input: { username: string; expiresAt: number }) {
+  return JSON.stringify(input);
+}
+
+function parsePayload(value: string): { username: string; expiresAt: number } {
+  const parsed = JSON.parse(value) as {
+    username?: string;
+    expiresAt?: number;
+  };
+
+  if (typeof parsed.username !== "string" || typeof parsed.expiresAt !== "number") {
+    throw new Error("Invalid admin session payload.");
+  }
+
+  return {
+    username: parsed.username,
+    expiresAt: parsed.expiresAt,
+  };
+}
+
 export function getAdminSessionCookieName() {
   return SESSION_COOKIE;
 }
@@ -39,9 +59,14 @@ export function getAdminSessionTtlSeconds() {
 
 export async function createSignedAdminSessionValue(username: string, secret: string) {
   const expiresAt = Date.now() + SESSION_TTL_MS;
-  const payload = `${username}.${expiresAt}`;
+  const payload = serializePayload({ username, expiresAt });
   const signature = await sign(payload, secret);
-  return encodeBase64Url(`${payload}.${signature}`);
+  return encodeBase64Url(
+    JSON.stringify({
+      payload,
+      signature,
+    }),
+  );
 }
 
 export async function verifySignedAdminSessionValue(input: {
@@ -57,19 +82,22 @@ export async function verifySignedAdminSessionValue(input: {
 
   try {
     const decoded = decodeBase64Url(value);
-    const [username, expiresAtRaw, signature] = decoded.split(".");
+    const parsed = JSON.parse(decoded) as {
+      payload?: string;
+      signature?: string;
+    };
 
-    if (!username || !expiresAtRaw || !signature) {
+    if (!parsed.payload || !parsed.signature) {
       return false;
     }
 
-    const expectedSignature = await sign(`${username}.${expiresAtRaw}`, secret);
+    const expectedSignature = await sign(parsed.payload, secret);
 
-    if (signature !== expectedSignature) {
+    if (parsed.signature !== expectedSignature) {
       return false;
     }
 
-    const expiresAt = Number(expiresAtRaw);
+    const { username, expiresAt } = parsePayload(parsed.payload);
 
     if (!Number.isFinite(expiresAt) || Date.now() > expiresAt) {
       return false;
