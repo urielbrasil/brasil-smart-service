@@ -1,72 +1,306 @@
-"use client";
+import Link from "next/link";
+import { requireAdminSession } from "@/lib/admin-auth";
+import { listBots } from "@/lib/railway";
 
-import { ShieldCheck, Users, Settings, MessageSquareText } from "lucide-react";
-import { AdminLogoutButton } from "@/components/admin-logout-button";
-import { useLanguage } from "@/components/language-provider";
-import { translations } from "@/app/translations";
+function formatBotStatus(status: string) {
+  const map: Record<string, string> = {
+    SUCCESS: "Ativo",
+    BUILDING: "Buildando",
+    DEPLOYING: "Publicando",
+    FAILED: "Falhou",
+    CRASHED: "Crashed",
+    REMOVED: "Removido",
+    SLEEPING: "Dormindo",
+    SKIPPED: "Ignorado",
+    WAITING: "Aguardando",
+    QUEUED: "Na fila",
+    NOT_DEPLOYED: "Sem deploy",
+  };
 
-export default function AdminDashboardPage() {
-  const { locale } = useLanguage();
-  const copy = translations[locale].admin.dashboard;
-  const panels = [
-    {
-      title: copy.panels[0].title,
-      description: copy.panels[0].description,
-      icon: Users,
-    },
-    {
-      title: copy.panels[1].title,
-      description: copy.panels[1].description,
-      icon: Settings,
-    },
-    {
-      title: copy.panels[2].title,
-      description: copy.panels[2].description,
-      icon: MessageSquareText,
-    },
-  ];
+  return map[status] || status;
+}
+
+function formatHealthStatus(status: "online" | "offline" | "unknown") {
+  if (status === "online") {
+    return "Health OK";
+  }
+
+  if (status === "offline") {
+    return "Health com erro";
+  }
+
+  return "Health indisponível";
+}
+
+function formatDate(value?: string) {
+  if (!value) {
+    return "Sem registro";
+  }
+
+  return new Intl.DateTimeFormat("pt-BR", {
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(value));
+}
+
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ success?: string; error?: string }>;
+}) {
+  await requireAdminSession();
+
+  const { success, error } = await searchParams;
+
+  let dashboard;
+
+  try {
+    dashboard = await listBots();
+  } catch (railwayError) {
+    const message =
+      railwayError instanceof Error
+        ? railwayError.message
+        : "Falha ao consultar a Railway.";
+
+    return (
+      <section className="min-h-[calc(100vh-73px)] bg-[linear-gradient(180deg,_#f8fafc_0%,_#eef6f1_45%,_#ffffff_100%)] px-6 py-16">
+        <div className="mx-auto max-w-4xl rounded-[2rem] border border-rose-200 bg-white p-8 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+          <h1 className="text-3xl font-bold text-slate-900">Admin</h1>
+          <p className="mt-4 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            {message}
+          </p>
+          <p className="mt-4 text-sm text-slate-600">
+            Verifique as envs do site: `RAILWAY_TOKEN`, `RAILWAY_PROJECT_ID` e,
+            se necessário, `RAILWAY_ENVIRONMENT_ID`.
+          </p>
+          <div className="mt-6">
+            <Link href="/admin/login" className="text-sm font-medium text-emerald-700">
+              Voltar para login
+            </Link>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const { bots, environmentName, projectName } = dashboard;
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_28%),linear-gradient(180deg,_#f8fafc_0%,_#eef6f1_42%,_#ffffff_100%)] px-6 pb-20 pt-32 text-slate-900 md:pt-36">
-      <section className="mx-auto max-w-6xl rounded-[2.5rem] bg-[linear-gradient(135deg,_#065f46_0%,_#022c22_52%,_#020617_100%)] p-8 text-white shadow-[0_24px_80px_rgba(15,23,42,0.24)] md:p-10">
-        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+    <section className="min-h-[calc(100vh-73px)] bg-[linear-gradient(180deg,_#f8fafc_0%,_#eef6f1_45%,_#ffffff_100%)] px-6 py-16">
+      <div className="mx-auto max-w-6xl space-y-8">
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div>
-            <div className="mb-6 inline-flex rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-semibold tracking-[0.24em] uppercase text-emerald-100">
-              {copy.badge}
-            </div>
-            <h1 className="text-4xl font-bold leading-tight md:text-5xl">
-              {copy.title}
+            <p className="text-xs font-semibold tracking-[0.22em] text-emerald-700 uppercase">
+              Admin
+            </p>
+            <h1 className="mt-3 text-3xl font-bold text-slate-900">
+              Bots na Railway
             </h1>
-            <p className="mt-5 max-w-2xl text-lg text-emerald-50/90">
-              {copy.description}
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              Projeto: <strong>{projectName}</strong> · Ambiente:{" "}
+              <strong>{environmentName}</strong>
             </p>
           </div>
 
-          <AdminLogoutButton />
+          <form action="/api/admin/logout" method="post">
+            <button
+              type="submit"
+              className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 hover:border-slate-300"
+            >
+              Sair
+            </button>
+          </form>
         </div>
-      </section>
 
-      <section className="mx-auto mt-10 grid max-w-6xl gap-6 md:grid-cols-3">
-        {panels.map(({ title, description, icon: Icon }) => (
-          <div
-            key={title}
-            className="rounded-[2rem] border border-emerald-100 bg-white p-8 shadow-[0_18px_50px_rgba(15,23,42,0.06)]"
-          >
-            <Icon className="text-emerald-600" />
-            <h2 className="mt-4 text-xl font-semibold">{title}</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-600">{description}</p>
+        {success ? (
+          <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
+            {success}
           </div>
-        ))}
-      </section>
+        ) : null}
 
-      <section className="mx-auto mt-10 max-w-6xl rounded-[2rem] border border-slate-200 bg-slate-950 px-8 py-8 text-white shadow-[0_24px_70px_rgba(15,23,42,0.18)]">
-        <div className="flex items-start gap-3">
-          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-emerald-300" />
-          <div className="text-sm leading-6 text-slate-200">
-            {copy.note}
+        {error ? (
+          <div className="rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+            {error}
+          </div>
+        ) : null}
+
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_1.7fr]">
+          <div className="rounded-[2rem] border border-emerald-100 bg-white p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+            <h2 className="text-xl font-semibold text-slate-900">
+              Criar novo bot
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              Cada bot vira um serviço novo no projeto configurado da Railway,
+              apontando para o repositório do WhatsAppBot.
+            </p>
+
+            <form action="/api/admin/bots/create" method="post" className="mt-6 space-y-4">
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-slate-700">
+                  Nome do serviço na Railway
+                </span>
+                <input
+                  name="name"
+                  required
+                  placeholder="bot-clinica-centro"
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-slate-700">
+                  WHATSAPP_VERIFY_TOKEN
+                </span>
+                <input
+                  name="whatsappVerifyToken"
+                  required
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-slate-700">
+                  WHATSAPP_ACCESS_TOKEN
+                </span>
+                <input
+                  name="whatsappAccessToken"
+                  required
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-slate-700">
+                  WHATSAPP_PHONE_NUMBER_ID
+                </span>
+                <input
+                  name="whatsappPhoneNumberId"
+                  required
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-slate-700">
+                  OPENAI_API_KEY
+                </span>
+                <input
+                  name="openaiApiKey"
+                  required
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500"
+                />
+              </label>
+
+              <label className="block">
+                <span className="mb-2 block text-sm font-medium text-slate-700">
+                  OPENAI_MODEL
+                </span>
+                <input
+                  name="openaiModel"
+                  defaultValue="gpt-4.1-mini"
+                  className="w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-emerald-500"
+                />
+              </label>
+
+              <button
+                type="submit"
+                className="w-full rounded-2xl bg-emerald-700 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-800"
+              >
+                Criar bot
+              </button>
+            </form>
+          </div>
+
+          <div className="rounded-[2rem] border border-emerald-100 bg-white p-6 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
+            <div className="flex items-center justify-between gap-4">
+              <div>
+                <h2 className="text-xl font-semibold text-slate-900">
+                  Bots criados
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-slate-600">
+                  Aqui voce acompanha status do deploy, health check e pode
+                  desabilitar ou reativar cada bot.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              {bots.length === 0 ? (
+                <div className="rounded-2xl border border-dashed border-slate-200 px-4 py-6 text-sm text-slate-500">
+                  Nenhum bot encontrado no projeto filtrado.
+                </div>
+              ) : null}
+
+              {bots.map((bot) => {
+                const isActive = !["REMOVED", "NOT_DEPLOYED"].includes(bot.deploymentStatus);
+
+                return (
+                  <article
+                    key={bot.id}
+                    className="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5"
+                  >
+                    <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                      <div>
+                        <h3 className="text-lg font-semibold text-slate-900">
+                          {bot.name}
+                        </h3>
+                        <div className="mt-3 flex flex-wrap gap-2 text-xs font-medium">
+                          <span className="rounded-full bg-white px-3 py-1 text-slate-700">
+                            {formatBotStatus(bot.deploymentStatus)}
+                          </span>
+                          <span className="rounded-full bg-white px-3 py-1 text-slate-700">
+                            {formatHealthStatus(bot.healthStatus)}
+                          </span>
+                          <span className="rounded-full bg-white px-3 py-1 text-slate-700">
+                            Replicas: {bot.replicas}
+                          </span>
+                        </div>
+                        <p className="mt-4 text-sm text-slate-600">
+                          Ultimo deploy: {formatDate(bot.deploymentCreatedAt)}
+                        </p>
+                        {bot.deploymentUrl ? (
+                          <p className="mt-2 text-sm text-slate-600">
+                            URL:{" "}
+                            <a
+                              href={bot.deploymentUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="font-medium text-emerald-700"
+                            >
+                              abrir bot
+                            </a>
+                          </p>
+                        ) : null}
+                      </div>
+
+                      <div className="flex flex-wrap gap-3">
+                        <form action={`/api/admin/bots/${bot.id}/enable`} method="post">
+                          <button
+                            type="submit"
+                            className="rounded-2xl border border-emerald-200 bg-white px-4 py-3 text-sm font-medium text-emerald-700 hover:border-emerald-300"
+                          >
+                            Reativar
+                          </button>
+                        </form>
+
+                        <form action={`/api/admin/bots/${bot.id}/disable`} method="post">
+                          <button
+                            type="submit"
+                            disabled={!isActive}
+                            className="rounded-2xl border border-rose-200 bg-white px-4 py-3 text-sm font-medium text-rose-700 hover:border-rose-300 disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            Desabilitar
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 }

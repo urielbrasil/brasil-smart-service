@@ -1,95 +1,91 @@
-export const ADMIN_SESSION_COOKIE = "bs_admin_session";
-const SESSION_TTL_SECONDS = 60 * 60 * 8;
+import { createHmac, timingSafeEqual } from "node:crypto";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-type SessionPayload = {
-  email: string;
-  exp: number;
-};
+const SESSION_COOKIE = "brasilsmart_admin_session";
+const SESSION_TTL_MS = 1000 * 60 * 60 * 12;
 
-export function getAdminCredentials() {
-  const email = process.env.ADMIN_LOGIN_EMAIL;
-  const password = process.env.ADMIN_LOGIN_PASSWORD;
+function getAdminConfig() {
+  const username = process.env.ADMIN_USERNAME || process.env.ADMIN_LOGIN_EMAIL;
+  const password = process.env.ADMIN_PASSWORD || process.env.ADMIN_LOGIN_PASSWORD;
   const secret = process.env.ADMIN_SESSION_SECRET;
 
-  if (!email || !password || !secret) {
-    return null;
+  if (!username || !password || !secret) {
+    throw new Error(
+      "Missing admin auth configuration. Set ADMIN_USERNAME or ADMIN_LOGIN_EMAIL, ADMIN_PASSWORD or ADMIN_LOGIN_PASSWORD, and ADMIN_SESSION_SECRET.",
+    );
   }
 
-  return { email, password, secret };
+  return { username, password, secret };
 }
 
-async function sign(value: string, secret: string) {
-  const key = await crypto.subtle.importKey(
-    "raw",
-    new TextEncoder().encode(secret),
-    { name: "HMAC", hash: "SHA-256" },
-    false,
-    ["sign"]
-  );
-
-  const signature = await crypto.subtle.sign(
-    "HMAC",
-    key,
-    new TextEncoder().encode(value)
-  );
-
-  return Array.from(new Uint8Array(signature))
-    .map((byte) => byte.toString(16).padStart(2, "0"))
-    .join("");
+function sign(payload: string, secret: string) {
+  return createHmac("sha256", secret).update(payload).digest("hex");
 }
 
-export async function createAdminSession(email: string, secret: string) {
-  const payload: SessionPayload = {
-    email,
-    exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SECONDS,
-  };
-
-  const encoded = Buffer.from(JSON.stringify(payload)).toString("base64url");
-  const signature = await sign(encoded, secret);
-  return `${encoded}.${signature}`;
+export function validateAdminCredentials(username: string, password: string) {
+  const config = getAdminConfig();
+  return username === config.username && password === config.password;
 }
 
-export async function verifyAdminSession(
-  token: string | undefined | null,
-  secret: string
-) {
-  if (!token) {
-    return null;
-  }
+export function createAdminSessionValue(username: string) {
+  const { secret } = getAdminConfig();
+  const expiresAt = Date.now() + SESSION_TTL_MS;
+  const payload = `${username}.${expiresAt}`;
+  const signature = sign(payload, secret);
 
-  const [encoded, providedSignature] = token.split(".");
+  return Buffer.from(`${payload}.${signature}`).toString("base64url");
+}
 
-  if (!encoded || !providedSignature) {
-    return null;
-  }
-
-  const expectedSignature = await sign(encoded, secret);
-
-  if (providedSignature !== expectedSignature) {
-    return null;
+export function verifyAdminSessionValue(value?: string) {
+  if (!value) {
+    return false;
   }
 
   try {
-    const payload = JSON.parse(
-      Buffer.from(encoded, "base64url").toString("utf8")
-    ) as SessionPayload;
+    const decoded = Buffer.from(value, "base64url").toString("utf8");
+    const [username, expiresAtRaw, signature] = decoded.split(".");
 
-    if (!payload.email || !payload.exp || payload.exp < Math.floor(Date.now() / 1000)) {
-      return null;
+    if (!username || !expiresAtRaw || !signature) {
+      return false;
     }
 
-    return payload;
+    const { secret, username: expectedUsername } = getAdminConfig();
+    const payload = `${username}.${expiresAtRaw}`;
+    const expectedSignature = sign(payload, secret);
+
+    if (
+      !timingSafeEqual(
+        Buffer.from(signature, "utf8"),
+        Buffer.from(expectedSignature, "utf8"),
+      )
+    ) {
+      return false;
+    }
+
+    const expiresAt = Number(expiresAtRaw);
+
+    if (!Number.isFinite(expiresAt) || Date.now() > expiresAt) {
+      return false;
+    }
+
+    return username === expectedUsername;
   } catch {
-    return null;
+    return false;
   }
 }
 
-export function adminSessionCookieOptions() {
-  return {
-    httpOnly: true,
-    sameSite: "strict" as const,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    maxAge: SESSION_TTL_SECONDS,
-  };
+export async function isAdminAuthenticated() {
+  const cookieStore = await cookies();
+  return verifyAdminSessionValue(cookieStore.get(SESSION_COOKIE)?.value);
+}
+
+export async function requireAdminSession() {
+  if (!(await isAdminAuthenticated())) {
+    redirect("/admin/login");
+  }
+}
+
+export function getAdminSessionCookieName() {
+  return SESSION_COOKIE;
 }

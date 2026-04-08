@@ -1,5 +1,24 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Admin Railway
+
+This project now includes an `/admin` area for managing WhatsApp bot services on Railway.
+
+Required environment variables for the admin panel:
+
+- `ADMIN_USERNAME`
+- `ADMIN_PASSWORD`
+- `ADMIN_SESSION_SECRET`
+- `RAILWAY_TOKEN`
+- `RAILWAY_PROJECT_ID`
+
+Optional Railway settings:
+
+- `RAILWAY_ENVIRONMENT_ID`
+- `RAILWAY_BOT_REPO` default: `urielbrasil/brasil-smart-bot`
+- `RAILWAY_BOT_BRANCH` default: `main`
+- `RAILWAY_BOT_SERVICE_PREFIX` to filter which services appear as bots
+
 ## Getting Started
 
 First, run the development server:

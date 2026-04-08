@@ -1,42 +1,87 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import {
-  ADMIN_SESSION_COOKIE,
-  adminSessionCookieOptions,
-  createAdminSession,
-  getAdminCredentials,
+  createAdminSessionValue,
+  getAdminSessionCookieName,
+  validateAdminCredentials,
 } from "@/lib/admin-auth";
 
 export async function POST(request: Request) {
-  const credentials = getAdminCredentials();
+  const contentType = request.headers.get("content-type") || "";
+  let username = "";
+  let password = "";
 
-  if (!credentials) {
-    return NextResponse.json(
-      {
-        ok: false,
-        error:
-          "Credenciais de administrador não configuradas no servidor. Defina ADMIN_LOGIN_EMAIL, ADMIN_LOGIN_PASSWORD e ADMIN_SESSION_SECRET.",
-      },
-      { status: 503 }
+  if (contentType.includes("application/json")) {
+    const body = (await request.json()) as {
+      email?: string;
+      username?: string;
+      password?: string;
+    };
+
+    username = String(body.username || body.email || "");
+    password = String(body.password || "");
+  } else {
+    const formData = await request.formData();
+    username = String(formData.get("username") || formData.get("email") || "");
+    password = String(formData.get("password") || "");
+  }
+
+  try {
+    if (!validateAdminCredentials(username, password)) {
+      if (contentType.includes("application/json")) {
+        return NextResponse.json(
+          { ok: false, error: "Credenciais inválidas." },
+          { status: 401 },
+        );
+      }
+
+      return NextResponse.redirect(
+        new URL("/admin/login?error=Credenciais%20inv%C3%A1lidas.", request.url),
+        { status: 303 },
+      );
+    }
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "Falha ao validar credenciais.";
+
+    if (contentType.includes("application/json")) {
+      return NextResponse.json({ ok: false, error: message }, { status: 503 });
+    }
+
+    return NextResponse.redirect(
+      new URL(`/admin/login?error=${encodeURIComponent(message)}`, request.url),
+      { status: 303 },
     );
   }
 
-  const body = (await request.json()) as {
-    email?: string;
-    password?: string;
-  };
+  const sessionValue = createAdminSessionValue(username);
 
-  if (body.email !== credentials.email || body.password !== credentials.password) {
-    return NextResponse.json(
-      { ok: false, error: "E-mail ou senha inválidos." },
-      { status: 401 }
-    );
+  if (contentType.includes("application/json")) {
+    const response = NextResponse.json({ ok: true });
+    response.cookies.set({
+      name: getAdminSessionCookieName(),
+      value: sessionValue,
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 60 * 60 * 12,
+    });
+    return response;
   }
 
-  const token = await createAdminSession(credentials.email, credentials.secret);
-  const cookieStore = await cookies();
+  const response = NextResponse.redirect(new URL("/admin", request.url), {
+    status: 303,
+  });
 
-  cookieStore.set(ADMIN_SESSION_COOKIE, token, adminSessionCookieOptions());
+  response.cookies.set({
+    name: getAdminSessionCookieName(),
+    value: sessionValue,
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 12,
+  });
 
-  return NextResponse.json({ ok: true });
+  return response;
 }
